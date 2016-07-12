@@ -23,7 +23,7 @@
         android:id="@+id/location"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="29dp" />
+        android:layout_marginTop="50dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
         android:layout_below="@+id/temperature"
         android:layout_marginTop="80dp"
         android:gravity="center"
-        android:layout_marginLeft="35dp" />
+        android:layout_marginLeft="24dp" />
 
     <TextView
         android:layout_width="wrap_content"
