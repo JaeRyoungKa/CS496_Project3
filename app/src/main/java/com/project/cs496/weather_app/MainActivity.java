@@ -62,6 +62,12 @@ public class MainActivity extends AppCompatActivity{
             return true;
         }
 
+        if(id == R.id.map_button) {
+            Intent gotomap = new Intent(this, GPSandGoogleMap.class);
+            startActivityForResult(gotomap, 2);
+            return true;
+        }
+
         if(id == android.R.id.home) {
             Toast.makeText(this, "home", Toast.LENGTH_SHORT).show();
             return true;

@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.project.cs496.weather_app"
-        minSdkVersion 22
-        targetSdkVersion 23
+        minSdkVersion 21
+        targetSdkVersion 22
         versionCode 11
         versionName "11.0"
     }
