@@ -1,9 +1,12 @@
 package com.project.cs496.weather_app;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import android.location.Location;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -20,7 +23,8 @@ public class GPSandGoogleMap extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         OnMapReadyCallback {
-
+    EditText et;
+    String sfName = "myFile";
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
 
@@ -118,6 +122,13 @@ public class GPSandGoogleMap extends AppCompatActivity implements
         mCurrLocation = mGoogleMap.addMarker(markerOptions);
 
         Toast.makeText(this,"위치가 변경되었습니다.",Toast.LENGTH_SHORT).show();
+        SharedPreferences sf = getSharedPreferences(sfName, 0);
+        SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
+        String str1 = Double.toString(location.getLatitude());
+        String str2 = Double.toString(location.getLongitude());
+        editor.putString("Lat", str1); // 입력
+        editor.putString("Long", str2); // 입력
+        editor.commit(); // 파일에 최종 반영함
 
         //If you only need one location, unregister the listener
         //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);

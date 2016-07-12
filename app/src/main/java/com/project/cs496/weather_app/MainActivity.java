@@ -2,12 +2,16 @@ package com.project.cs496.weather_app;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.TextureView;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -16,12 +20,23 @@ import com.facebook.FacebookSdk;
 public class MainActivity extends AppCompatActivity{
     private String fb_id;
     private String fb_token;
+    String sfName = "myFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFF666));
+
+        TextView et = (TextView) findViewById(R.id.Lat);
+        SharedPreferences sf = getSharedPreferences(sfName, 0);
+        String str = sf.getString("Lat", ""); // 키값으로 꺼냄
+        et.setText(str);
+
+        TextView et2 = (TextView) findViewById(R.id.Long);
+        String str2 = sf.getString("Long", "");
+        et2.setText(str2);
+
        /* FacebookSdk.sdkInitialize(getApplicationContext());
 
         if(AccessToken.getCurrentAccessToken() == null) {
