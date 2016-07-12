@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Weather_app</string>
+    <string name="facebook_app_id">1748396375444488</string>
+
 </resources>

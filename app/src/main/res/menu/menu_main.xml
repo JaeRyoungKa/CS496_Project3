@@ -3,8 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
-    <item android:id="@+id/action_button"
-        android:title="액션버튼"
-        app:showAsAction="always|withText"/>
+    <item android:id="@+id/fb_login_button"
+        android:icon="@drawable/facebook"
+        android:title="로그인 버튼"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/travel_button"
+        android:icon="@drawable/tent"
+        android:title="일정 짜기"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/setting_button"
+        android:icon="@drawable/settings"
+        android:title="설정"
+        app:showAsAction="always"/>
 
 </menu>
