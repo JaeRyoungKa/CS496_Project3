@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,18 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.google.android.gms.awareness.state.Weather;
+import com.google.android.gms.vision.text.Text;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity{
     private String fb_id;
@@ -28,14 +41,55 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFF666));
 
-        TextView et = (TextView) findViewById(R.id.Lat);
         SharedPreferences sf = getSharedPreferences(sfName, 0);
         String str = sf.getString("Lat", ""); // 키값으로 꺼냄
-        et.setText(str);
-
-        TextView et2 = (TextView) findViewById(R.id.Long);
         String str2 = sf.getString("Long", "");
-        et2.setText(str2);
+
+        if(android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+        String data = ((new WeatherHttpClient()).getWeatherData(str, str2));
+        String data2 = ((new WeatherHttpClient2()).getWeatherData(str, str2));
+        try {
+            JSONObject reader = new JSONObject(data);
+            JSONObject reader2 = new JSONObject(data2);
+            JSONArray list = reader2.getJSONArray("list");
+            JSONObject main = reader.getJSONObject("main");
+            JSONArray weather = reader.getJSONArray("weather");
+            JSONObject des = weather.getJSONObject(0);
+            JSONObject th1 = list.getJSONObject(0);
+            JSONObject thd1 = th1.getJSONObject("main");
+            String temp = main.getString("temp");
+            TextView et3 = (TextView) findViewById(R.id.temperature);
+            et3.setText(temp);
+            TextView et4 = (TextView) findViewById(R.id.location);
+            String temp2 = reader.getString("name");
+            et4.setText(temp2);
+            TextView et5 = (TextView) findViewById(R.id.detail);
+            String temp3 = des.getString("description");
+            et5.setText(temp3);
+            TextView et6 = (TextView) findViewById(R.id.temp_00);
+            String temp4 = thd1.getString("temp");
+            et6.setText(temp4);
+            TextView et7 = (TextView) findViewById(R.id.temp_03);
+            et7.setText(list.getJSONObject(1).getJSONObject("main").getString("temp"));
+            TextView et8 = (TextView) findViewById(R.id.temp_06);
+            et8.setText(list.getJSONObject(2).getJSONObject("main").getString("temp"));
+            TextView et9 = (TextView) findViewById(R.id.temp_09);
+            et9.setText(list.getJSONObject(3).getJSONObject("main").getString("temp"));
+            TextView et10 = (TextView) findViewById(R.id.temp_12);
+            et10.setText(list.getJSONObject(4).getJSONObject("main").getString("temp"));
+            TextView et11 = (TextView) findViewById(R.id.temp_15);
+            et11.setText(list.getJSONObject(5).getJSONObject("main").getString("temp"));
+            TextView et12 = (TextView) findViewById(R.id.temp_18);
+            et12.setText(list.getJSONObject(6).getJSONObject("main").getString("temp"));
+            TextView et13 = (TextView) findViewById(R.id.temp_21);
+            et13.setText(list.getJSONObject(7).getJSONObject("main").getString("temp"));
+
+        } catch (JSONException e) {
+            Log.e("MYAPP", "unexpected JSON exception", e);
+        }
 
        /* FacebookSdk.sdkInitialize(getApplicationContext());
 
