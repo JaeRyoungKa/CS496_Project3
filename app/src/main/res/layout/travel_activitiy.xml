@@ -17,9 +17,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/map2"
-        android:text="여행일정 :"
-        android:id="@+id/name_schedule"
         android:layout_marginTop="15dp"
+        android:textSize="18dp"
+        android:text="여행일정 : "
+        android:id="@+id/name_schedule"
         android:layout_marginLeft="50dp" />
 
     <TextView
@@ -27,12 +28,16 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/name_schedule"
         android:text=""
+        android:textSize="18dp"
+        android:layout_below="@id/map2"
+        android:layout_marginTop="15dp"
         android:id="@+id/value_schedule" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="장소 : "
+        android:textSize="18dp"
         android:layout_below="@id/name_schedule"
         android:id="@+id/name_location"
         android:layout_marginLeft="50dp"/>
@@ -42,6 +47,17 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/name_location"
         android:text=""
+        android:textSize="18dp"
+        android:layout_below="@id/map2"
+        android:layout_marginTop="15dp"
         android:id="@+id/value_location" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="캘린더 열기"
+        android:id="@+id/gotofecth"
+        android:layout_below="@+id/name_location"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

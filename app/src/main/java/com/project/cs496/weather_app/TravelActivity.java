@@ -10,7 +10,10 @@ import android.location.Location;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,7 +30,7 @@ import java.util.ArrayList;
 
 public class TravelActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, OnMapReadyCallback {
+        LocationListener, OnMapReadyCallback, View.OnClickListener {
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     LatLng latLng;
@@ -43,7 +46,21 @@ public class TravelActivity extends AppCompatActivity implements
 
         mFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map2);
         mFragment.getMapAsync(this);
+        Button btn_intent = (Button)findViewById(R.id.gotofecth);
+        btn_intent.setOnClickListener(this);
+        TextView date = (TextView) findViewById(R.id.value_schedule);
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            date.setText(intent.getStringExtra("date"));
+        }
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(this, FetchTravelInfo.class);
+        startActivity(intent);
     }
 
     @Override
@@ -93,8 +110,8 @@ public class TravelActivity extends AppCompatActivity implements
         }
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000); //5 seconds
-        mLocationRequest.setFastestInterval(3000); //3 seconds
+        mLocationRequest.setInterval(2147483647); //5 seconds
+        mLocationRequest.setFastestInterval(2147483647); //3 seconds
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
 

@@ -24,6 +24,7 @@
         <activity android:name=".SettingActivity"/>
         <activity android:name=".TravelActivity" />
         <activity android:name=".GPSandGoogleMap" />
+        <activity android:name=".FetchTravelInfo"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>
