@@ -333,11 +333,6 @@ public class MainActivity extends AppCompatActivity{
             return true;
         }
 
-        if(id == R.id.map_button) {
-            Intent gotomap = new Intent(this, GPSandGoogleMap.class);
-            startActivityForResult(gotomap, 3);
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
