@@ -167,8 +167,8 @@ public class TravelActivity extends AppCompatActivity implements
                 // TODO Auto-generated method stub
                 LatLng markerLocation = arg0.getPosition();
                 TextView loc = (TextView) findViewById(R.id.value_location);
-                lat = latLng.latitude;
-                lng = latLng.longitude;
+                lat = markerLocation.latitude;
+                lng = markerLocation.longitude;
                 Log.d("Marker", "finished");
             }
 
