@@ -203,8 +203,8 @@ public class MainActivity extends AppCompatActivity{
         }
 
         if(id == R.id.travel_button) {
-            Toast.makeText(this, "wow2", Toast.LENGTH_SHORT).show();
-
+            Intent setting_intent = new Intent(this,TravelActivity.class);
+            startActivityForResult(setting_intent,4);
             return true;
         }
 
