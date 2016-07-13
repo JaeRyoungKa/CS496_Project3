@@ -124,7 +124,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/detail"
-        android:text="지구 멸망"
+        android:text="로딩중..."
         android:textSize="24dp"
         android:layout_below="@+id/temperature"
         android:layout_marginTop="18dp"
