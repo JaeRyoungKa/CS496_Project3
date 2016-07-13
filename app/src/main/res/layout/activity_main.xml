@@ -30,8 +30,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="50sp"
-        android:text="00"
+        android:textSize="50dp"
+        android:text="위치를 설정해주세요."
         android:id="@+id/temperature"
         android:layout_below="@+id/location"
         android:layout_centerHorizontal="true"

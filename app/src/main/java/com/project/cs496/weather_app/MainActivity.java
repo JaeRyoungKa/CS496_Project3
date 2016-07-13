@@ -333,11 +333,11 @@ public class MainActivity extends AppCompatActivity{
             return true;
         }
 
-       /* if(id == R.id.map_button) {
+        if(id == R.id.map_button) {
             Intent gotomap = new Intent(this, GPSandGoogleMap.class);
             startActivityForResult(gotomap, 3);
             return true;
-        }*/
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -349,6 +349,7 @@ public class MainActivity extends AppCompatActivity{
             if(resultCode == Activity.RESULT_OK) {
                 fb_id = data.getStringExtra("user_id");
                 fb_token = data.getStringExtra("user_token");
+                Log.d("id!",fb_id);
             } else {
                 fb_id = "";
                 fb_token = "";

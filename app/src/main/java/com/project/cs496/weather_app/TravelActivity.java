@@ -10,8 +10,10 @@ import android.location.Location;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,27 +26,65 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class TravelActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, OnMapReadyCallback {
+        LocationListener, OnMapReadyCallback, View.OnClickListener {
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     LatLng latLng;
     GoogleMap mGoogleMap;
     SupportMapFragment mFragment;
     Marker mCurrLocation;
+    double lat;
+    double lng;
+    String sfName = "myFile";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.travel_activitiy);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map2);
         mFragment.getMapAsync(this);
+        Button btn_intent = (Button)findViewById(R.id.gotofecth);
+        btn_intent.setOnClickListener(this);
+        Button btn_intent2 = (Button) findViewById(R.id.confirm);
+        btn_intent2.setOnClickListener(this);
+        TextView date = (TextView) findViewById(R.id.value_schedule);
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            date.setText(intent.getStringExtra("date"));
+        }
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == findViewById(R.id.gotofecth)) {
+            Intent intent = new Intent(this, FetchTravelInfo.class);
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            SharedPreferences sf = getSharedPreferences(sfName, 0);
+            SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
+            String str1 = Double.toString(lat);
+            String str2 = Double.toString(lng);
+         //   editor.putString("latitude", str1);
+         //   editor.putString("longitude", str2);
+         //   editor.putString("place_name", "여행 목적지");
+            editor.commit(); // 파일에 최종 반영함
+
+        }
     }
 
     @Override
@@ -89,13 +129,14 @@ public class TravelActivity extends AppCompatActivity implements
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
             markerOptions.title("Current Position");
+            markerOptions.draggable(true);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
             mCurrLocation = mGoogleMap.addMarker(markerOptions);
         }
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000); //5 seconds
-        mLocationRequest.setFastestInterval(3000); //3 seconds
+        mLocationRequest.setInterval(1000); //5 seconds
+        mLocationRequest.setFastestInterval(1000); //3 seconds
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
 
@@ -116,18 +157,46 @@ public class TravelActivity extends AppCompatActivity implements
     public void onLocationChanged(Location location) {
 
         //remove previous current location marker and add new one at current position
-        if (mCurrLocation != null) {
-            mCurrLocation.remove();
-        }
-        latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocation = mGoogleMap.addMarker(markerOptions);
+        latLng = mCurrLocation.getPosition();
+        mGoogleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
 
-        //If you only need one location, unregister the listener
-        //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            @Override
+            public void onMarkerDrag(Marker arg0) {
+                // TODO Auto-generated method stub
+                Log.d("Marker", "Dragging");
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker arg0) {
+                // TODO Auto-generated method stub
+                LatLng markerLocation = arg0.getPosition();
+                TextView loc = (TextView) findViewById(R.id.value_location);
+                lat = markerLocation.latitude;
+                lng = markerLocation.longitude;
+                Log.d("Marker", "finished");
+                TextView latlng = (TextView) findViewById(R.id.latlng);
+                latlng.setText("Lat : "+Double.toString(lat)+" Lng : "+Double.toString(lng));
+                Geocoder geocoder = new Geocoder(TravelActivity.this, Locale.getDefault());
+                List<Address> addresses = null;
+                try {
+                    addresses = geocoder.getFromLocation(lat, lng, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String cityName = addresses.get(0).getAddressLine(0);
+                loc.setText(cityName);
+            }
+
+            @Override
+            public void onMarkerDragStart(Marker arg0) {
+                // TODO Auto-generated method stub
+                Log.d("Marker", "Started");
+
+            }
+        });
+
+
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
