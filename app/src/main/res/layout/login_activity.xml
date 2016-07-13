@@ -5,7 +5,9 @@
     <TextView
         android:id="@+id/status_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="로그인을 해 주세요."/>
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
