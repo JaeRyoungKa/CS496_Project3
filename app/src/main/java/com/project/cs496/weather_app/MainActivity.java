@@ -76,8 +76,6 @@ public class MainActivity extends AppCompatActivity{
         String longitude = sf.getString("longitude", "");
         place_name = sf.getString("place_name","");
 
-        Log.i("latitude",latitude);
-        Log.i("longitude",longitude);
 
         location_box = (TextView) findViewById(R.id.location);
 
@@ -153,9 +151,6 @@ public class MainActivity extends AppCompatActivity{
         String latitude = sf.getString("latitude", ""); // 키값으로 꺼냄
         String longitude = sf.getString("longitude", "");
         place_name = sf.getString("place_name","");
-
-
-
         location_box.setText(place_name);
 
         Ion.with(this)

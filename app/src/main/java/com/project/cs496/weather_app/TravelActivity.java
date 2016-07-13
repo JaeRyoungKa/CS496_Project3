@@ -37,6 +37,9 @@ public class TravelActivity extends AppCompatActivity implements
     GoogleMap mGoogleMap;
     SupportMapFragment mFragment;
     Marker mCurrLocation;
+    double lat;
+    double lng;
+    String sfName = "myFile";
 
 
     @Override
@@ -48,6 +51,8 @@ public class TravelActivity extends AppCompatActivity implements
         mFragment.getMapAsync(this);
         Button btn_intent = (Button)findViewById(R.id.gotofecth);
         btn_intent.setOnClickListener(this);
+        Button btn_intent2 = (Button) findViewById(R.id.confirm);
+        btn_intent2.setOnClickListener(this);
         TextView date = (TextView) findViewById(R.id.value_schedule);
 
         Intent intent = getIntent();
@@ -55,12 +60,27 @@ public class TravelActivity extends AppCompatActivity implements
             date.setText(intent.getStringExtra("date"));
         }
 
+
     }
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(this, FetchTravelInfo.class);
-        startActivity(intent);
+        if (v == findViewById(R.id.gotofecth)) {
+            Intent intent = new Intent(this, FetchTravelInfo.class);
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            SharedPreferences sf = getSharedPreferences(sfName, 0);
+            SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
+            String str1 = Double.toString(lat);
+            String str2 = Double.toString(lng);
+            editor.putString("latitude", str1);
+            editor.putString("longitude", str2);
+            editor.putString("place_name", "여행 목적지");
+            editor.commit(); // 파일에 최종 반영함
+        }
     }
 
     @Override
@@ -105,13 +125,14 @@ public class TravelActivity extends AppCompatActivity implements
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
             markerOptions.title("Current Position");
+            markerOptions.draggable(true);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
             mCurrLocation = mGoogleMap.addMarker(markerOptions);
         }
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(2147483647); //5 seconds
-        mLocationRequest.setFastestInterval(2147483647); //3 seconds
+        mLocationRequest.setInterval(1000); //5 seconds
+        mLocationRequest.setFastestInterval(1000); //3 seconds
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
 
@@ -132,18 +153,35 @@ public class TravelActivity extends AppCompatActivity implements
     public void onLocationChanged(Location location) {
 
         //remove previous current location marker and add new one at current position
-        if (mCurrLocation != null) {
-            mCurrLocation.remove();
-        }
-        latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocation = mGoogleMap.addMarker(markerOptions);
+        latLng = mCurrLocation.getPosition();
+        mGoogleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
 
-        //If you only need one location, unregister the listener
-        //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            @Override
+            public void onMarkerDrag(Marker arg0) {
+                // TODO Auto-generated method stub
+                Log.d("Marker", "Dragging");
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker arg0) {
+                // TODO Auto-generated method stub
+                LatLng markerLocation = arg0.getPosition();
+                TextView loc = (TextView) findViewById(R.id.value_location);
+                lat = latLng.latitude;
+                lng = latLng.longitude;
+                Log.d("Marker", "finished");
+            }
+
+            @Override
+            public void onMarkerDragStart(Marker arg0) {
+                // TODO Auto-generated method stub
+                Log.d("Marker", "Started");
+
+            }
+        });
+
+
+
     }
 
 }

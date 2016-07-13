@@ -48,8 +48,7 @@
         android:layout_toEndOf="@id/name_location"
         android:text=""
         android:textSize="18dp"
-        android:layout_below="@id/map2"
-        android:layout_marginTop="15dp"
+        android:layout_below="@id/value_schedule"
         android:id="@+id/value_location" />
 
     <Button
@@ -58,6 +57,14 @@
         android:text="캘린더 열기"
         android:id="@+id/gotofecth"
         android:layout_below="@+id/name_location"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:id="@+id/confirm"
+        android:layout_below="@+id/gotofecth"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
