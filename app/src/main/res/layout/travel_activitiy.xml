@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -10,8 +14,17 @@
         class="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/map2"
         android:layout_width="wrap_content"
-        android:layout_height="250dp"
+        android:layout_height="220dp"
         android:layout_gravity="center_horizontal" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/confirm_"
+        android:dividerHeight="4dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,8 +87,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="확인"
-        android:id="@+id/confirm"
-        android:layout_below="@+id/gotofecth"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/confirm_"
+        android:layout_alignTop="@+id/gotofecth"
+        android:layout_toEndOf="@+id/gotofecth" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="추가"
+        android:id="@+id/add"
+        android:layout_above="@+id/recycler_view"
+        android:layout_toStartOf="@+id/gotofecth" />
 
 </RelativeLayout>
+    </ScrollView>

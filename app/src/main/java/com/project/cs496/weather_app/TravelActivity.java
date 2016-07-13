@@ -28,6 +28,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.project.cs496.weather_app.adapters.MyAdapter;
+import com.project.cs496.weather_app.adapters.MyData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +48,11 @@ public class TravelActivity extends AppCompatActivity implements
     double lat;
     double lng;
     String sfName = "myFile";
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<MyData> MyDataset;
+    String cityName;
 
 
     @Override
@@ -57,16 +64,31 @@ public class TravelActivity extends AppCompatActivity implements
         mFragment.getMapAsync(this);
         Button btn_intent = (Button)findViewById(R.id.gotofecth);
         btn_intent.setOnClickListener(this);
-        Button btn_intent2 = (Button) findViewById(R.id.confirm);
+        Button btn_intent2 = (Button) findViewById(R.id.confirm_);
         btn_intent2.setOnClickListener(this);
         TextView date = (TextView) findViewById(R.id.value_schedule);
+        Button add = (Button) findViewById(R.id.add);
+        add.setOnClickListener(this);
 
         Intent intent = getIntent();
         if (intent != null) {
             date.setText(intent.getStringExtra("date"));
         }
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        MyDataset = new ArrayList<>();
+        mAdapter = new MyAdapter(MyDataset);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -75,7 +97,7 @@ public class TravelActivity extends AppCompatActivity implements
             Intent intent = new Intent(this, FetchTravelInfo.class);
             startActivity(intent);
         }
-        else {
+        else if (v == findViewById(R.id.confirm_)){
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             SharedPreferences sf = getSharedPreferences(sfName, 0);
@@ -86,7 +108,12 @@ public class TravelActivity extends AppCompatActivity implements
          //   editor.putString("longitude", str2);
          //   editor.putString("place_name", "여행 목적지");
             editor.commit(); // 파일에 최종 반영함
-
+        }
+        else {
+            TextView date = (TextView) findViewById(R.id.value_schedule);
+            MyDataset.add(new MyData((String) date.getText(), cityName));
+            mRecyclerView.setAdapter(mAdapter);
+            Toast.makeText(this,"디버깅 중...",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -186,7 +213,7 @@ public class TravelActivity extends AppCompatActivity implements
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                String cityName = addresses.get(0).getAddressLine(0);
+                cityName = addresses.get(0).getAddressLine(0);
                 loc.setText(cityName);
             }
 
