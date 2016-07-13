@@ -1,8 +1,11 @@
 package com.project.cs496.weather_app;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -28,7 +31,6 @@ public class WeatherHttpClient2 {
             String line = null;
             while ((line = br.readLine()) != null)
                 buffer.append(line + "\r\n");
-
             is.close();
             con.disconnect();
             return buffer.toString();

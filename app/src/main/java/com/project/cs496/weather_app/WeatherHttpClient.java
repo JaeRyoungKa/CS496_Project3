@@ -1,5 +1,7 @@
 package com.project.cs496.weather_app;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,6 +18,7 @@ public class WeatherHttpClient {
 
         try {
             con = (HttpURLConnection) (new URL(BASE_URL + lat + "&lon=" + lon + "&appid=7248c7ed960daa7f39956e40b175485b&units=metric")).openConnection();
+           // Log.i("url!",BASE_URL + lat + "&lon=" + lon + "&appid=7248c7ed960daa7f39956e40b175485b&units=metric");
             con.setRequestMethod("GET");
             con.setDoInput(true);
             con.setDoOutput(true);

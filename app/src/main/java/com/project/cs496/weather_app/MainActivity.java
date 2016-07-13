@@ -51,49 +51,69 @@ public class MainActivity extends AppCompatActivity{
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFF666));
 
         SharedPreferences sf = getSharedPreferences(sfName, 0);
-        String str = sf.getString("Lat", ""); // 키값으로 꺼냄
-        String str2 = sf.getString("Long", "");
+        String latitude = sf.getString("latitude", ""); // 키값으로 꺼냄
+        String longitude = sf.getString("longitude", "");
+        place_name = sf.getString("place_name","");
+
+        Log.i("latitude",latitude);
+        Log.i("longitude",longitude);
 
         if(android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        String data = ((new WeatherHttpClient()).getWeatherData(str, str2));
-        String data2 = ((new WeatherHttpClient2()).getWeatherData(str, str2));
+
+        String nowWeatherData = ((new WeatherHttpClient()).getWeatherData(latitude, longitude));
+        String futureWeatherData = ((new WeatherHttpClient2()).getWeatherData(latitude, longitude));
+
+        Log.i("data!",nowWeatherData);
+
 
         try {
-            JSONObject reader = new JSONObject(data);
-            JSONObject reader2 = new JSONObject(data2);
+            JSONObject reader = new JSONObject(nowWeatherData);
+            JSONObject reader2 = new JSONObject(futureWeatherData);
+
             JSONArray list = reader2.getJSONArray("list");
             JSONObject main = reader.getJSONObject("main");
+
             JSONArray weather = reader.getJSONArray("weather");
             JSONObject des = weather.getJSONObject(0);
             JSONObject th1 = list.getJSONObject(0);
             JSONObject thd1 = th1.getJSONObject("main");
+
             String temp = main.getString("temp");
-            TextView et3 = (TextView) findViewById(R.id.temperature);
-            et3.setText(temp);
-            TextView et4 = (TextView) findViewById(R.id.location);
-            String temp2 = reader.getString("name");
-            et4.setText(temp2);
+            TextView temp_box = (TextView) findViewById(R.id.temperature);
+            temp_box.setText(temp);
+
+            TextView location_box = (TextView) findViewById(R.id.location);
+            location_box.setText(place_name);
+
             TextView et5 = (TextView) findViewById(R.id.detail);
             String temp3 = des.getString("description");
             et5.setText(temp3);
+
             TextView et6 = (TextView) findViewById(R.id.temp_00);
             String temp4 = thd1.getString("temp");
             et6.setText(temp4);
+
             TextView et7 = (TextView) findViewById(R.id.temp_03);
             et7.setText(list.getJSONObject(1).getJSONObject("main").getString("temp"));
+
             TextView et8 = (TextView) findViewById(R.id.temp_06);
             et8.setText(list.getJSONObject(2).getJSONObject("main").getString("temp"));
+
             TextView et9 = (TextView) findViewById(R.id.temp_09);
             et9.setText(list.getJSONObject(3).getJSONObject("main").getString("temp"));
+
             TextView et10 = (TextView) findViewById(R.id.temp_12);
             et10.setText(list.getJSONObject(4).getJSONObject("main").getString("temp"));
+
             TextView et11 = (TextView) findViewById(R.id.temp_15);
             et11.setText(list.getJSONObject(5).getJSONObject("main").getString("temp"));
+
             TextView et12 = (TextView) findViewById(R.id.temp_18);
             et12.setText(list.getJSONObject(6).getJSONObject("main").getString("temp"));
+
             TextView et13 = (TextView) findViewById(R.id.temp_21);
             et13.setText(list.getJSONObject(7).getJSONObject("main").getString("temp"));
 
@@ -115,10 +135,89 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        SharedPreferences sf = getSharedPreferences(sfName, 0);
+        String latitude = sf.getString("latitude", ""); // 키값으로 꺼냄
+        String longitude = sf.getString("longitude", "");
+        place_name = sf.getString("place_name","");
+
+        Log.i("latitude",latitude);
+        Log.i("longitude",longitude);
+
+        if(android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+        String nowWeatherData = ((new WeatherHttpClient()).getWeatherData(latitude, longitude));
+        String futureWeatherData = ((new WeatherHttpClient2()).getWeatherData(latitude, longitude));
+
+        Log.i("data!",nowWeatherData);
+
+
+        try {
+            JSONObject reader = new JSONObject(nowWeatherData);
+            JSONObject reader2 = new JSONObject(futureWeatherData);
+
+            JSONArray list = reader2.getJSONArray("list");
+            JSONObject main = reader.getJSONObject("main");
+
+            JSONArray weather = reader.getJSONArray("weather");
+            JSONObject des = weather.getJSONObject(0);
+            JSONObject th1 = list.getJSONObject(0);
+            JSONObject thd1 = th1.getJSONObject("main");
+
+            String temp = main.getString("temp");
+            TextView temp_box = (TextView) findViewById(R.id.temperature);
+            temp_box.setText(temp);
+
+            TextView location_box = (TextView) findViewById(R.id.location);
+            location_box.setText(place_name);
+
+            TextView et5 = (TextView) findViewById(R.id.detail);
+            String temp3 = des.getString("description");
+            et5.setText(temp3);
+
+            TextView et6 = (TextView) findViewById(R.id.temp_00);
+            String temp4 = thd1.getString("temp");
+            et6.setText(temp4);
+
+            TextView et7 = (TextView) findViewById(R.id.temp_03);
+            et7.setText(list.getJSONObject(1).getJSONObject("main").getString("temp"));
+
+            TextView et8 = (TextView) findViewById(R.id.temp_06);
+            et8.setText(list.getJSONObject(2).getJSONObject("main").getString("temp"));
+
+            TextView et9 = (TextView) findViewById(R.id.temp_09);
+            et9.setText(list.getJSONObject(3).getJSONObject("main").getString("temp"));
+
+            TextView et10 = (TextView) findViewById(R.id.temp_12);
+            et10.setText(list.getJSONObject(4).getJSONObject("main").getString("temp"));
+
+            TextView et11 = (TextView) findViewById(R.id.temp_15);
+            et11.setText(list.getJSONObject(5).getJSONObject("main").getString("temp"));
+
+            TextView et12 = (TextView) findViewById(R.id.temp_18);
+            et12.setText(list.getJSONObject(6).getJSONObject("main").getString("temp"));
+
+            TextView et13 = (TextView) findViewById(R.id.temp_21);
+            et13.setText(list.getJSONObject(7).getJSONObject("main").getString("temp"));
+
+        } catch (JSONException e) {
+            Log.e("MYAPP", "unexpected JSON exception", e);
+        }
+
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -168,15 +267,23 @@ public class MainActivity extends AppCompatActivity{
                 latitude = data.getDoubleExtra("latitude",0.00);
                 longitude = data.getDoubleExtra("longitude",0.00);
                 place_name = data.getStringExtra("place_name");
+                SharedPreferences sf = getSharedPreferences(sfName,0);
+                SharedPreferences.Editor editor = sf.edit();
 
-                Log.i("latitude",String.valueOf(latitude));
-                Log.i("longitude",String.valueOf(longitude));
-                Log.i("place_name",place_name);
+                editor.putString("latitude",Double.toString(latitude));
+                editor.putString("longitude",Double.toString(longitude));
+                editor.putString("place_name",place_name);
 
+                editor.commit();
+
+          //      Log.i("latitude",String.valueOf(latitude));
+           //     Log.i("longitude",String.valueOf(longitude));
+            //    Log.i("place_name",place_name);
 
             } else {
                 latitude = 0.00;
                 longitude = 0.00;
+                place_name = "";
             }
         }
 
