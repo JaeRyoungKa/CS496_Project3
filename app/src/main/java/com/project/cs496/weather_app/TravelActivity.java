@@ -10,6 +10,7 @@ import android.location.Location;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
@@ -40,7 +41,7 @@ public class TravelActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.travel_activitiy);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map2);
         mFragment.getMapAsync(this);
 
@@ -127,6 +128,16 @@ public class TravelActivity extends AppCompatActivity implements
 
         //If you only need one location, unregister the listener
         //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -28,5 +28,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.3.0'
     compile 'com.google.android.gms:play-services:9.2.0'
     compile 'com.android.support:multidex:1.0.0'
-    compile 'com.koushikdutta.ion:ion:2.+'
+    compile 'com.koushikdutta.ion:ion:2.+' // for Http request and receive Json Data (open library)
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.5' // for graph library
+
 }

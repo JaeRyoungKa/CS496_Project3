@@ -16,4 +16,8 @@ public class WeatherHttpClient {
         return BASE_URL + lat + "&lon=" + lon + "&appid=7248c7ed960daa7f39956e40b175485b&units=metric";
     }
 
+    public String getIconUrl(String icon_id) {
+        return "http://openweathermap.org/img/w/" + icon_id + ".png";
+    }
+
 }

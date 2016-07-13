@@ -4,44 +4,34 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.TextureView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.FacebookSdk;
-import com.google.android.gms.awareness.state.Weather;
-import com.google.android.gms.vision.text.Text;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity{
     private String fb_id;
@@ -51,8 +41,18 @@ public class MainActivity extends AppCompatActivity{
     private double longitude;
     private String place_name;
 
-    TextView location_box;
-    TextView temp_box;
+    //Context resolveContext;
+
+    private TextView location_name;
+    private TextView current_temper;
+    private TextView days;
+    private TextView date;
+    private ImageView weather_icon;
+    private LineChart chart;
+    private Calendar cal;
+
+
+
     TextView description_box;
 
     TextView et6;
@@ -68,23 +68,40 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFF666));
+       // resolveContext = this;
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.main);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(00,191,255)));
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setElevation(0);
+
+       // getWindow().getDecorView().setBackgroundColor(Color.rgb(135,206,250));
 
         SharedPreferences sf = getSharedPreferences(sfName, 0);
         String latitude = sf.getString("latitude", ""); // 키값으로 꺼냄
         String longitude = sf.getString("longitude", "");
+
+
+
         place_name = sf.getString("place_name","");
 
-        Log.i("latitude",latitude);
-        Log.i("longitude",longitude);
+        days = (TextView) findViewById(R.id.days);
 
-        location_box = (TextView) findViewById(R.id.location);
+        date = (TextView) findViewById(R.id.date);
 
-        temp_box = (TextView) findViewById(R.id.temperature);
+        location_name = (TextView) findViewById(R.id.location_name);
+
+        current_temper = (TextView) findViewById(R.id.current_temper);
+
         description_box = (TextView) findViewById(R.id.detail);
 
-        et6 = (TextView) findViewById(R.id.temp_00);
+        weather_icon = (ImageView) findViewById(R.id.weather_icon);
+
+        chart = (LineChart) findViewById(R.id.chart);
+
+        cal = Calendar.getInstance();
+
+        /*et6 = (TextView) findViewById(R.id.temp_00);
         et7 = (TextView) findViewById(R.id.temp_03);
         et8 = (TextView) findViewById(R.id.temp_06);
         et9 = (TextView) findViewById(R.id.temp_09);
@@ -92,32 +109,47 @@ public class MainActivity extends AppCompatActivity{
         et11 = (TextView) findViewById(R.id.temp_15);
         et12 = (TextView) findViewById(R.id.temp_18);
         et13 = (TextView) findViewById(R.id.temp_21);
+*/
+        location_name.setText(place_name);
 
-        location_box.setText(place_name);
+        date.setText(DateFormat.getDateInstance().format(new Date()));
 
-         Ion.with(this)
-                 .load((new WeatherHttpClient()).getWeatherDataUrl(latitude, longitude))
-                 .asJsonObject()
-                 .setCallback(new FutureCallback<JsonObject>() {
-                     @Override
-                     public void onCompleted(Exception e, JsonObject result) {
-                         try{
-                             JsonObject main = result.getAsJsonObject("main");
-                             String current_temperature = main.get("temp").toString();
-                             temp_box.setText(current_temperature);
-                             // main --> object 중 temp 항목 빼오는 과정 그리고 setText함
+        chart.setDrawBorders(false); // disable drawing the chart borders(lines surrounding the chart)
+        chart.setKeepPositionOnRotation(true);
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.getAxisRight().setEnabled(false);
+        chart.getAxisLeft().setDrawGridLines(false);
+        chart.getXAxis().setDrawGridLines(false);
+        chart.setDescription("");
+        chart.getAxisLeft().setEnabled(false);
+        chart.setTouchEnabled(false);
 
-                             JsonObject weather = result.getAsJsonArray("weather").get(0).getAsJsonObject();
-                             String description = weather.get("description").getAsString();
-                             description_box.setText(description);
-                         }catch(Exception exception){
 
-                         }
+        Ion.with(this)
+                .load((new WeatherHttpClient()).getWeatherDataUrl(latitude, longitude))
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        try{
+                            JsonObject main = result.getAsJsonObject("main");
+                            Double current_temperature = Double.parseDouble(main.get("temp").toString());
 
-                     }
-                 });
+                            current_temper.setText(String.valueOf(current_temperature.intValue()) + (char) 0x00B0);
+                            // main --> object 중 temp 항목 빼오는 과정 그리고 setText함
 
-        Log.i("url!",(new WeatherHttpClient2()).getWeatherDataUrl(latitude, longitude));
+                            JsonObject weather = result.getAsJsonArray("weather").get(0).getAsJsonObject();
+
+                            String icon_id = weather.get("icon").getAsString();
+                            Ion.with(weather_icon)
+                                    .load((new WeatherHttpClient()).getIconUrl(icon_id));
+                        }catch(Exception exception){
+
+                        }
+
+                    }
+                });
+
         Ion.with(this)
                 .load((new WeatherHttpClient2()).getWeatherDataUrl(latitude, longitude))
                 .asJsonObject()
@@ -128,14 +160,43 @@ public class MainActivity extends AppCompatActivity{
                         try{
                             JsonArray list = result.getAsJsonArray("list");
 
-                            et6.setText(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et7.setText(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et8.setText(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et9.setText(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et10.setText(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et11.setText(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et12.setText(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et13.setText(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            ArrayList<String> labels = new ArrayList<String>();
+
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 3) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 6) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 9) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 12) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 15) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 18) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 21) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 24) %24) + "시");
+
+
+                            ArrayList<Entry> entries = new ArrayList<Entry>();
+
+                            entries.add(new Entry(Float.valueOf(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 0));
+                            entries.add(new Entry(Float.valueOf(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 1));
+                            entries.add(new Entry(Float.valueOf(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 2));
+                            entries.add(new Entry(Float.valueOf(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 3));
+                            entries.add(new Entry(Float.valueOf(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 4));
+                            entries.add(new Entry(Float.valueOf(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 5));
+                            entries.add(new Entry(Float.valueOf(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 6));
+                            entries.add(new Entry(Float.valueOf(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 7));
+
+                            LineDataSet dataset = new LineDataSet(entries, "온도");
+
+                            LineData data = new LineData(labels, dataset);
+                            dataset.setDrawFilled(true);
+
+                            dataset.setCircleColor(-65281);
+                            dataset.setValueTextSize(12f);
+
+
+                            chart.setData(data);
+
+                            chart.invalidate();
+
+
 
                         } catch(Exception exception) {
 
@@ -156,7 +217,7 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-        location_box.setText(place_name);
+        location_name.setText(place_name);
 
         Ion.with(this)
                 .load((new WeatherHttpClient()).getWeatherDataUrl(latitude, longitude))
@@ -166,13 +227,16 @@ public class MainActivity extends AppCompatActivity{
                     public void onCompleted(Exception e, JsonObject result) {
                         try{
                             JsonObject main = result.getAsJsonObject("main");
-                            String current_temperature = main.get("temp").toString();
-                            temp_box.setText(current_temperature);
+                            Double current_temperature = Double.parseDouble(main.get("temp").toString());
+
+                            current_temper.setText(String.valueOf(current_temperature.intValue()) + (char) 0x00B0);
                             // main --> object 중 temp 항목 빼오는 과정 그리고 setText함
 
                             JsonObject weather = result.getAsJsonArray("weather").get(0).getAsJsonObject();
-                            String description = weather.get("description").getAsString();
-                            description_box.setText(description);
+
+                            String icon_id = weather.get("icon").getAsString();
+                            Ion.with(weather_icon)
+                                    .load((new WeatherHttpClient()).getIconUrl(icon_id));
                         }catch(Exception exception){
 
                         }
@@ -180,7 +244,6 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
 
-        Log.i("url!",(new WeatherHttpClient2()).getWeatherDataUrl(latitude, longitude));
         Ion.with(this)
                 .load((new WeatherHttpClient2()).getWeatherDataUrl(latitude, longitude))
                 .asJsonObject()
@@ -191,20 +254,50 @@ public class MainActivity extends AppCompatActivity{
                         try{
                             JsonArray list = result.getAsJsonArray("list");
 
-                            et6.setText(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et7.setText(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et8.setText(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et9.setText(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et10.setText(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et11.setText(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et12.setText(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                            et13.setText(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            ArrayList<String> labels = new ArrayList<String>();
+
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 3) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 6) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 9) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 12) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 15) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 18) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 21) % 24) + "시");
+                            labels.add(String.valueOf((cal.get(Calendar.HOUR) + 24) %24) + "시");
+
+
+                            ArrayList<Entry> entries = new ArrayList<Entry>();
+
+                            entries.add(new Entry(Float.valueOf(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 0));
+                            entries.add(new Entry(Float.valueOf(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 1));
+                            entries.add(new Entry(Float.valueOf(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 2));
+                            entries.add(new Entry(Float.valueOf(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 3));
+                            entries.add(new Entry(Float.valueOf(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 4));
+                            entries.add(new Entry(Float.valueOf(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 5));
+                            entries.add(new Entry(Float.valueOf(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 6));
+                            entries.add(new Entry(Float.valueOf(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString()), 7));
+
+                            LineDataSet dataset = new LineDataSet(entries, "온도");
+
+                            LineData data = new LineData(labels, dataset);
+                            dataset.setDrawFilled(true);
+
+                            dataset.setCircleColor(-65281);
+                            dataset.setValueTextSize(12f);
+
+
+                            chart.setData(data);
+
+                            chart.invalidate();
+
+
 
                         } catch(Exception exception) {
 
                         }
-    }
+                    }
                 });
+
 
     }
 
@@ -240,11 +333,11 @@ public class MainActivity extends AppCompatActivity{
             return true;
         }
 
-        if(id == R.id.map_button) {
+       /* if(id == R.id.map_button) {
             Intent gotomap = new Intent(this, GPSandGoogleMap.class);
             startActivityForResult(gotomap, 3);
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -256,7 +349,6 @@ public class MainActivity extends AppCompatActivity{
             if(resultCode == Activity.RESULT_OK) {
                 fb_id = data.getStringExtra("user_id");
                 fb_token = data.getStringExtra("user_token");
-                Log.d("id!",fb_id);
             } else {
                 fb_id = "";
                 fb_token = "";

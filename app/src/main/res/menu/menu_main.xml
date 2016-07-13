@@ -18,10 +18,10 @@
         android:title="설정"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/map_button"
+    <!--<item android:id="@+id/map_button"
         android:icon="@drawable/ic_media_play"
         android:title="지도 보기"
-        app:showAsAction="always"/>
+        app:showAsAction="always"/>-->
 
 
 </menu>
