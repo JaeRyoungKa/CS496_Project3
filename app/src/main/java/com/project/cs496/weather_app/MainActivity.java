@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity{
     private String fb_id;
     private String fb_token;
     String sfName = "myFile";
+    private double latitude;
+    private double longitude;
+    private String place_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity{
         }
         String data = ((new WeatherHttpClient()).getWeatherData(str, str2));
         String data2 = ((new WeatherHttpClient2()).getWeatherData(str, str2));
+
         try {
             JSONObject reader = new JSONObject(data);
             JSONObject reader2 = new JSONObject(data2);
@@ -128,13 +132,13 @@ public class MainActivity extends AppCompatActivity{
 
         if(id == R.id.setting_button) {
             Intent setting_intent = new Intent(this,SettingActivity.class);
-            startActivityForResult(setting_intent,3);
+            startActivityForResult(setting_intent,2);
             return true;
         }
 
         if(id == R.id.map_button) {
             Intent gotomap = new Intent(this, GPSandGoogleMap.class);
-            startActivityForResult(gotomap, 2);
+            startActivityForResult(gotomap, 3);
             return true;
         }
 
@@ -152,6 +156,21 @@ public class MainActivity extends AppCompatActivity{
             } else {
                 fb_id = "";
                 fb_token = "";
+            }
+        } else if(requestCode == 2){
+            if(resultCode == Activity.RESULT_OK) {
+                latitude = data.getDoubleExtra("latitude",0.00);
+                longitude = data.getDoubleExtra("longitude",0.00);
+                place_name = data.getStringExtra("place_name");
+
+                Log.i("latitude",String.valueOf(latitude));
+                Log.i("longitude",String.valueOf(longitude));
+                Log.i("place_name",place_name);
+
+
+            } else {
+                latitude = 0.00;
+                longitude = 0.00;
             }
         }
 

@@ -1,5 +1,6 @@
 package com.project.cs496.weather_app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -41,9 +42,14 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
     private PlacesAutoCompleteAdapter mAutoCompleteAdapter;
     ImageView delete;
 
+    private double latitude;
+    private double longitude;
+    private String place_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         buildGoogleApiClient();
         setContentView(R.layout.setting_activity);
         mAutocompleteView = (EditText)findViewById(R.id.autocomplete_places);
@@ -98,7 +104,24 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
                             public void onResult(PlaceBuffer places) {
                                 if(places.getCount()==1){
                                     //Do the things here on Click.....
-                                    Toast.makeText(getApplicationContext(),String.valueOf(places.get(0).getLatLng()),Toast.LENGTH_SHORT).show();
+
+
+                                    latitude = places.get(0).getLatLng().latitude;
+                                    longitude = places.get(0).getLatLng().longitude;
+                                    place_name = places.get(0).getName().toString();
+                                    Intent go_to_main = getIntent();
+
+                                    go_to_main.putExtra("latitude",latitude);
+                                    go_to_main.putExtra("longitude",longitude);
+                                    go_to_main.putExtra("place_name",place_name);
+
+                                    setResult(Activity.RESULT_OK,go_to_main);
+
+                                    mGoogleApiClient.disconnect();
+
+                                    finish();
+
+                                   // Toast.makeText(getApplicationContext(),String.valueOf(places.get(0).getLatLng()),Toast.LENGTH_SHORT).show();
                                 }else {
                                     Toast.makeText(getApplicationContext(),Constants.SOMETHING_WENT_WRONG,Toast.LENGTH_SHORT).show();
                                 }
@@ -113,10 +136,20 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
 
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         return true;
+    }*/
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
