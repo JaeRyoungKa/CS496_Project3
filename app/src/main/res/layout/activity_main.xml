@@ -26,7 +26,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         app:font="custom1"
-        android:layout_marginTop="36dp" />
+        android:layout_marginTop="24dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,92 +39,86 @@
         android:layout_marginTop="25dp" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="150px"
         android:layout_height="wrap_content"
-        android:textSize="24dp"
+        android:textSize="12dp"
         android:text="00.00"
         android:id="@+id/temp_00"
         android:layout_below="@+id/temperature"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="100dp"
+        android:gravity="center"
         android:layout_alignWithParentIfMissing="false"
-        android:gravity="center" />
+        android:layout_marginLeft="15dp" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="150px"
         android:layout_height="wrap_content"
-        android:textSize="24dp"
+        android:textSize="12dp"
         android:text="00.00"
         android:id="@+id/temp_03"
-        android:layout_below="@+id/temp_00"
-        android:layout_marginTop="5dp"
-        android:layout_alignWithParentIfMissing="false"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/temp_00" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="150px"
         android:layout_height="wrap_content"
-        android:textSize="24dp"
+        android:textSize="12dp"
         android:text="00.00"
         android:id="@+id/temp_06"
-        android:layout_below="@+id/temp_03"
-        android:layout_marginTop="5dp"
-        android:layout_alignWithParentIfMissing="false"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/temp_03" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="150px"
         android:layout_height="wrap_content"
-        android:textSize="24dp"
+        android:textSize="12dp"
         android:text="00.00"
         android:id="@+id/temp_09"
-        android:layout_below="@+id/temp_06"
-        android:layout_marginTop="5dp"
-        android:layout_alignWithParentIfMissing="false"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/temp_06" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="150px"
         android:layout_height="wrap_content"
-        android:textSize="24dp"
+        android:textSize="12dp"
         android:text="00.00"
         android:id="@+id/temp_12"
-        android:layout_below="@+id/temp_09"
-        android:layout_marginTop="5dp"
-        android:layout_alignWithParentIfMissing="false"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/temp_09" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="150px"
         android:layout_height="wrap_content"
-        android:textSize="24dp"
+        android:textSize="12dp"
         android:text="00.00"
         android:id="@+id/temp_15"
-        android:layout_below="@+id/temp_12"
-        android:layout_marginTop="5dp"
-        android:layout_alignWithParentIfMissing="false"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/temp_12" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="150px"
         android:layout_height="wrap_content"
-        android:textSize="24dp"
+        android:textSize="12dp"
         android:text="00.00"
         android:id="@+id/temp_18"
-        android:layout_below="@+id/temp_15"
-        android:layout_marginTop="5dp"
-        android:layout_alignWithParentIfMissing="false"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/temp_15" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="150px"
         android:layout_height="wrap_content"
-        android:textSize="24dp"
+        android:textSize="12dp"
         android:text="00.00"
         android:id="@+id/temp_21"
-        android:layout_below="@+id/temp_18"
-        android:layout_marginTop="5dp"
-        android:layout_alignWithParentIfMissing="false"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/temp_18" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -136,6 +130,25 @@
         android:layout_marginTop="18dp"
         android:layout_alignWithParentIfMissing="false"
         android:gravity="center" />
+
+    <TextClock
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textClock"
+        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@+id/detail" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12dp"
+        android:text="03       06       09       12       15       18       21       24"
+        android:id="@+id/textView"
+        android:layout_below="@+id/detail"
+        android:layout_alignStart="@+id/temp_00"
+        android:layout_marginTop="35dp"
+        android:gravity="center"
+        android:layout_alignEnd="@+id/temp_21" />
 
 </RelativeLayout>
 </ScrollView>
