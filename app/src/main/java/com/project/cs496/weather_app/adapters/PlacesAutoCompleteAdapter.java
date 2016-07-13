@@ -213,6 +213,4 @@ public class PlacesAutoCompleteAdapter
             return description.toString();
         }
     }
-
-
 }

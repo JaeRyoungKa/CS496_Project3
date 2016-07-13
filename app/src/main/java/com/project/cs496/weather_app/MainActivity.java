@@ -26,7 +26,9 @@ import com.google.android.gms.awareness.state.Weather;
 import com.google.android.gms.vision.text.Text;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.tsengvn.typekit.TypekitContextWrapper;
@@ -99,14 +101,19 @@ public class MainActivity extends AppCompatActivity{
                  .setCallback(new FutureCallback<JsonObject>() {
                      @Override
                      public void onCompleted(Exception e, JsonObject result) {
-                         JsonObject main = result.getAsJsonObject("main");
-                         String current_temperature = main.get("temp").toString();
-                         temp_box.setText(current_temperature);
-                         // main --> object 중 temp 항목 빼오는 과정 그리고 setText함
+                         try{
+                             JsonObject main = result.getAsJsonObject("main");
+                             String current_temperature = main.get("temp").toString();
+                             temp_box.setText(current_temperature);
+                             // main --> object 중 temp 항목 빼오는 과정 그리고 setText함
 
-                         JsonObject weather = result.getAsJsonArray("weather").get(0).getAsJsonObject();
-                         String description = weather.get("description").getAsString();
-                         description_box.setText(description);
+                             JsonObject weather = result.getAsJsonArray("weather").get(0).getAsJsonObject();
+                             String description = weather.get("description").getAsString();
+                             description_box.setText(description);
+                         }catch(Exception exception){
+
+                         }
+
                      }
                  });
 
@@ -117,16 +124,22 @@ public class MainActivity extends AppCompatActivity{
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
-                        JsonArray list = result.getAsJsonArray("list");
 
-                        et6.setText(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et7.setText(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et8.setText(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et9.setText(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et10.setText(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et11.setText(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et12.setText(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et13.setText(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        try{
+                            JsonArray list = result.getAsJsonArray("list");
+
+                            et6.setText(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et7.setText(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et8.setText(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et9.setText(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et10.setText(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et11.setText(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et12.setText(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et13.setText(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+
+                        } catch(Exception exception) {
+
+                        }
                     }
                 });
 
@@ -151,14 +164,19 @@ public class MainActivity extends AppCompatActivity{
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
-                        JsonObject main = result.getAsJsonObject("main");
-                        String current_temperature = main.get("temp").toString();
-                        temp_box.setText(current_temperature);
-                        // main --> object 중 temp 항목 빼오는 과정 그리고 setText함
+                        try{
+                            JsonObject main = result.getAsJsonObject("main");
+                            String current_temperature = main.get("temp").toString();
+                            temp_box.setText(current_temperature);
+                            // main --> object 중 temp 항목 빼오는 과정 그리고 setText함
 
-                        JsonObject weather = result.getAsJsonArray("weather").get(0).getAsJsonObject();
-                        String description = weather.get("description").getAsString();
-                        description_box.setText(description);
+                            JsonObject weather = result.getAsJsonArray("weather").get(0).getAsJsonObject();
+                            String description = weather.get("description").getAsString();
+                            description_box.setText(description);
+                        }catch(Exception exception){
+
+                        }
+
                     }
                 });
 
@@ -169,21 +187,29 @@ public class MainActivity extends AppCompatActivity{
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
-                        JsonArray list = result.getAsJsonArray("list");
 
-                        et6.setText(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et7.setText(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et8.setText(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et9.setText(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et10.setText(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et11.setText(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et12.setText(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                        et13.setText(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
-                    }
+                        try{
+                            JsonArray list = result.getAsJsonArray("list");
+
+                            et6.setText(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et7.setText(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et8.setText(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et9.setText(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et10.setText(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et11.setText(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et12.setText(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                            et13.setText(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+
+                        } catch(Exception exception) {
+
+                        }
+    }
                 });
 
-
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
