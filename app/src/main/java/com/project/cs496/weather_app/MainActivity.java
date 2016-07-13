@@ -24,6 +24,11 @@ import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.google.android.gms.awareness.state.Weather;
 import com.google.android.gms.vision.text.Text;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 import org.json.JSONArray;
@@ -44,6 +49,20 @@ public class MainActivity extends AppCompatActivity{
     private double longitude;
     private String place_name;
 
+    TextView location_box;
+    TextView temp_box;
+    TextView description_box;
+
+    TextView et6;
+    TextView et7;
+    TextView et8;
+    TextView et9;
+    TextView et10;
+    TextView et11;
+    TextView et12;
+    TextView et13;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,80 +77,59 @@ public class MainActivity extends AppCompatActivity{
         Log.i("latitude",latitude);
         Log.i("longitude",longitude);
 
-        if(android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+        location_box = (TextView) findViewById(R.id.location);
 
-        String nowWeatherData = ((new WeatherHttpClient()).getWeatherData(latitude, longitude));
-        String futureWeatherData = ((new WeatherHttpClient2()).getWeatherData(latitude, longitude));
+        temp_box = (TextView) findViewById(R.id.temperature);
+        description_box = (TextView) findViewById(R.id.detail);
 
-        Log.i("data!",nowWeatherData);
+        et6 = (TextView) findViewById(R.id.temp_00);
+        et7 = (TextView) findViewById(R.id.temp_03);
+        et8 = (TextView) findViewById(R.id.temp_06);
+        et9 = (TextView) findViewById(R.id.temp_09);
+        et10 = (TextView) findViewById(R.id.temp_12);
+        et11 = (TextView) findViewById(R.id.temp_15);
+        et12 = (TextView) findViewById(R.id.temp_18);
+        et13 = (TextView) findViewById(R.id.temp_21);
 
+        location_box.setText(place_name);
 
-        try {
-            JSONObject reader = new JSONObject(nowWeatherData);
-            JSONObject reader2 = new JSONObject(futureWeatherData);
+         Ion.with(this)
+                 .load((new WeatherHttpClient()).getWeatherDataUrl(latitude, longitude))
+                 .asJsonObject()
+                 .setCallback(new FutureCallback<JsonObject>() {
+                     @Override
+                     public void onCompleted(Exception e, JsonObject result) {
+                         JsonObject main = result.getAsJsonObject("main");
+                         String current_temperature = main.get("temp").toString();
+                         temp_box.setText(current_temperature);
+                         // main --> object 중 temp 항목 빼오는 과정 그리고 setText함
 
-            JSONArray list = reader2.getJSONArray("list");
-            JSONObject main = reader.getJSONObject("main");
+                         JsonObject weather = result.getAsJsonArray("weather").get(0).getAsJsonObject();
+                         String description = weather.get("description").getAsString();
+                         description_box.setText(description);
+                     }
+                 });
 
-            JSONArray weather = reader.getJSONArray("weather");
-            JSONObject des = weather.getJSONObject(0);
-            JSONObject th1 = list.getJSONObject(0);
-            JSONObject thd1 = th1.getJSONObject("main");
+        Log.i("url!",(new WeatherHttpClient2()).getWeatherDataUrl(latitude, longitude));
+        Ion.with(this)
+                .load((new WeatherHttpClient2()).getWeatherDataUrl(latitude, longitude))
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        JsonArray list = result.getAsJsonArray("list");
 
-            String temp = main.getString("temp");
-            TextView temp_box = (TextView) findViewById(R.id.temperature);
-            temp_box.setText(temp);
+                        et6.setText(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et7.setText(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et8.setText(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et9.setText(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et10.setText(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et11.setText(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et12.setText(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et13.setText(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                    }
+                });
 
-            TextView location_box = (TextView) findViewById(R.id.location);
-            location_box.setText(place_name);
-
-            TextView et5 = (TextView) findViewById(R.id.detail);
-            String temp3 = des.getString("description");
-            et5.setText(temp3);
-
-            TextView et6 = (TextView) findViewById(R.id.temp_00);
-            String temp4 = thd1.getString("temp");
-            et6.setText(temp4);
-
-            TextView et7 = (TextView) findViewById(R.id.temp_03);
-            et7.setText(list.getJSONObject(1).getJSONObject("main").getString("temp"));
-
-            TextView et8 = (TextView) findViewById(R.id.temp_06);
-            et8.setText(list.getJSONObject(2).getJSONObject("main").getString("temp"));
-
-            TextView et9 = (TextView) findViewById(R.id.temp_09);
-            et9.setText(list.getJSONObject(3).getJSONObject("main").getString("temp"));
-
-            TextView et10 = (TextView) findViewById(R.id.temp_12);
-            et10.setText(list.getJSONObject(4).getJSONObject("main").getString("temp"));
-
-            TextView et11 = (TextView) findViewById(R.id.temp_15);
-            et11.setText(list.getJSONObject(5).getJSONObject("main").getString("temp"));
-
-            TextView et12 = (TextView) findViewById(R.id.temp_18);
-            et12.setText(list.getJSONObject(6).getJSONObject("main").getString("temp"));
-
-            TextView et13 = (TextView) findViewById(R.id.temp_21);
-            et13.setText(list.getJSONObject(7).getJSONObject("main").getString("temp"));
-
-        } catch (JSONException e) {
-            Log.e("MYAPP", "unexpected JSON exception", e);
-        }
-
-       /* FacebookSdk.sdkInitialize(getApplicationContext());
-
-        if(AccessToken.getCurrentAccessToken() == null) {
-            Intent intent_to_login = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent_to_login,1);
-        } else {
-            fb_id = AccessToken.getCurrentAccessToken().getUserId();
-            fb_token = AccessToken.getCurrentAccessToken().getToken();
-        }
-
-*/
     }
 
     @Override
@@ -143,71 +141,46 @@ public class MainActivity extends AppCompatActivity{
         String longitude = sf.getString("longitude", "");
         place_name = sf.getString("place_name","");
 
-        Log.i("latitude",latitude);
-        Log.i("longitude",longitude);
-
-        if(android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-
-        String nowWeatherData = ((new WeatherHttpClient()).getWeatherData(latitude, longitude));
-        String futureWeatherData = ((new WeatherHttpClient2()).getWeatherData(latitude, longitude));
-
-        Log.i("data!",nowWeatherData);
 
 
-        try {
-            JSONObject reader = new JSONObject(nowWeatherData);
-            JSONObject reader2 = new JSONObject(futureWeatherData);
+        location_box.setText(place_name);
 
-            JSONArray list = reader2.getJSONArray("list");
-            JSONObject main = reader.getJSONObject("main");
+        Ion.with(this)
+                .load((new WeatherHttpClient()).getWeatherDataUrl(latitude, longitude))
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        JsonObject main = result.getAsJsonObject("main");
+                        String current_temperature = main.get("temp").toString();
+                        temp_box.setText(current_temperature);
+                        // main --> object 중 temp 항목 빼오는 과정 그리고 setText함
 
-            JSONArray weather = reader.getJSONArray("weather");
-            JSONObject des = weather.getJSONObject(0);
-            JSONObject th1 = list.getJSONObject(0);
-            JSONObject thd1 = th1.getJSONObject("main");
+                        JsonObject weather = result.getAsJsonArray("weather").get(0).getAsJsonObject();
+                        String description = weather.get("description").getAsString();
+                        description_box.setText(description);
+                    }
+                });
 
-            String temp = main.getString("temp");
-            TextView temp_box = (TextView) findViewById(R.id.temperature);
-            temp_box.setText(temp);
+        Log.i("url!",(new WeatherHttpClient2()).getWeatherDataUrl(latitude, longitude));
+        Ion.with(this)
+                .load((new WeatherHttpClient2()).getWeatherDataUrl(latitude, longitude))
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        JsonArray list = result.getAsJsonArray("list");
 
-            TextView location_box = (TextView) findViewById(R.id.location);
-            location_box.setText(place_name);
-
-            TextView et5 = (TextView) findViewById(R.id.detail);
-            String temp3 = des.getString("description");
-            et5.setText(temp3);
-
-            TextView et6 = (TextView) findViewById(R.id.temp_00);
-            String temp4 = thd1.getString("temp");
-            et6.setText(temp4);
-
-            TextView et7 = (TextView) findViewById(R.id.temp_03);
-            et7.setText(list.getJSONObject(1).getJSONObject("main").getString("temp"));
-
-            TextView et8 = (TextView) findViewById(R.id.temp_06);
-            et8.setText(list.getJSONObject(2).getJSONObject("main").getString("temp"));
-
-            TextView et9 = (TextView) findViewById(R.id.temp_09);
-            et9.setText(list.getJSONObject(3).getJSONObject("main").getString("temp"));
-
-            TextView et10 = (TextView) findViewById(R.id.temp_12);
-            et10.setText(list.getJSONObject(4).getJSONObject("main").getString("temp"));
-
-            TextView et11 = (TextView) findViewById(R.id.temp_15);
-            et11.setText(list.getJSONObject(5).getJSONObject("main").getString("temp"));
-
-            TextView et12 = (TextView) findViewById(R.id.temp_18);
-            et12.setText(list.getJSONObject(6).getJSONObject("main").getString("temp"));
-
-            TextView et13 = (TextView) findViewById(R.id.temp_21);
-            et13.setText(list.getJSONObject(7).getJSONObject("main").getString("temp"));
-
-        } catch (JSONException e) {
-            Log.e("MYAPP", "unexpected JSON exception", e);
-        }
+                        et6.setText(list.get(0).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et7.setText(list.get(1).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et8.setText(list.get(2).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et9.setText(list.get(3).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et10.setText(list.get(4).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et11.setText(list.get(5).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et12.setText(list.get(6).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                        et13.setText(list.get(7).getAsJsonObject().get("main").getAsJsonObject().get("temp").getAsString());
+                    }
+                });
 
 
     }
