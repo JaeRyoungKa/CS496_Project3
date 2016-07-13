@@ -127,7 +127,8 @@ public class MainActivity extends AppCompatActivity{
         }
 
         if(id == R.id.setting_button) {
-            Toast.makeText(this, "wow3", Toast.LENGTH_SHORT).show();
+            Intent setting_intent = new Intent(this,SettingActivity.class);
+            startActivityForResult(setting_intent,3);
             return true;
         }
 
@@ -137,10 +138,6 @@ public class MainActivity extends AppCompatActivity{
             return true;
         }
 
-        if(id == android.R.id.home) {
-            Toast.makeText(this, "home", Toast.LENGTH_SHORT).show();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
