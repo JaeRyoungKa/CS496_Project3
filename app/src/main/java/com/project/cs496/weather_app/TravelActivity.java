@@ -2,6 +2,8 @@ package com.project.cs496.weather_app;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,7 +28,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class TravelActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -76,10 +81,11 @@ public class TravelActivity extends AppCompatActivity implements
             SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
             String str1 = Double.toString(lat);
             String str2 = Double.toString(lng);
-            editor.putString("latitude", str1);
-            editor.putString("longitude", str2);
-            editor.putString("place_name", "여행 목적지");
+         //   editor.putString("latitude", str1);
+         //   editor.putString("longitude", str2);
+         //   editor.putString("place_name", "여행 목적지");
             editor.commit(); // 파일에 최종 반영함
+
         }
     }
 
@@ -170,6 +176,17 @@ public class TravelActivity extends AppCompatActivity implements
                 lat = markerLocation.latitude;
                 lng = markerLocation.longitude;
                 Log.d("Marker", "finished");
+                TextView latlng = (TextView) findViewById(R.id.latlng);
+                latlng.setText("Lat : "+Double.toString(lat)+" Lng : "+Double.toString(lng));
+                Geocoder geocoder = new Geocoder(TravelActivity.this, Locale.getDefault());
+                List<Address> addresses = null;
+                try {
+                    addresses = geocoder.getFromLocation(lat, lng, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String cityName = addresses.get(0).getAddressLine(0);
+                loc.setText(cityName);
             }
 
             @Override

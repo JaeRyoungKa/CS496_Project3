@@ -10,7 +10,7 @@
         class="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/map2"
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
+        android:layout_height="250dp"
         android:layout_gravity="center_horizontal" />
 
     <TextView
@@ -51,13 +51,24 @@
         android:layout_below="@id/value_schedule"
         android:id="@+id/value_location" />
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="14dp"
+        android:layout_below="@id/name_location"
+        android:id="@+id/latlng"
+        android:gravity="center"
+        android:layout_marginTop="22dp" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="캘린더 열기"
         android:id="@+id/gotofecth"
-        android:layout_below="@+id/name_location"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/latlng"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="9dp" />
 
     <Button
         android:layout_width="wrap_content"
