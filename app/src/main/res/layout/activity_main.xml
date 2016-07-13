@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Now Loading.."
+        android:text="위치를 설정해주세요"
         android:textSize="30dp"
         android:id="@+id/location"
         android:layout_alignParentTop="true"

@@ -121,7 +121,6 @@ public class GPSandGoogleMap extends AppCompatActivity implements
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocation = mGoogleMap.addMarker(markerOptions);
 
-        Toast.makeText(this,"위치가 변경되었습니다.",Toast.LENGTH_SHORT).show();
         SharedPreferences sf = getSharedPreferences(sfName, 0);
         SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
         String str1 = Double.toString(location.getLatitude());

@@ -1,6 +1,7 @@
 package com.project.cs496.weather_app;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.google.android.gms.maps.GoogleMap;
@@ -8,6 +9,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import android.location.Location;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
@@ -25,17 +27,13 @@ import java.util.ArrayList;
 
 public class TravelActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener,
-        OnMapReadyCallback {
+        LocationListener, OnMapReadyCallback {
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     LatLng latLng;
     GoogleMap mGoogleMap;
     SupportMapFragment mFragment;
     Marker mCurrLocation;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override
@@ -126,8 +124,6 @@ public class TravelActivity extends AppCompatActivity implements
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocation = mGoogleMap.addMarker(markerOptions);
-
-        Toast.makeText(this,"위치가 변경되었습니다.",Toast.LENGTH_SHORT).show();
 
         //If you only need one location, unregister the listener
         //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
