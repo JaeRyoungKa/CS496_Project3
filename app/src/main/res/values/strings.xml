@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Weather_app</string>
     <string name="facebook_app_id">1748396375444488</string>
-    <string name="google_api_key">AIzaSyAAXxnPctUiOBy2mcPd7KKjxHvhm3CjEGw</string>
+    <string name="google_api_key">AIzaSyDBmmS7izmneQAx1UijVQ3qdNQwYRNnMP4</string>
     <string name="open_weather_maps_app_id">7248c7ed960daa7f39956e40b175485b</string>
     <string name="autocomplete_hint">추가장소 검색</string>
 </resources>
